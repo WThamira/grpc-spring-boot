@@ -27,18 +27,25 @@ public class UserSender {
  
     @RequestMapping(method = RequestMethod.GET, value = "/senduser")
     public ResponseEntity<?> api() {
-
-    	ManagedChannel channel=ManagedChannelBuilder.forAddress("localhost",7565).usePlaintext(true).build();
-        UserServiceBlockingStub stub=UserServiceGrpc.newBlockingStub(channel);
-        
-        UserDetail user=UserDetail.newBuilder()
-        			.setName("Thamira")
-        			.setEmail("Thamira1005@gmail.com")
-        			.setAge(24).setGender(Gender.Male)
-        			.setPassword("password").build();
-        
-        user u=stub.createUser(user);
-        return ResponseEntity.ok(u.toString());
+    	user u=null;
+    	List<ServiceInstance> server=discoveryClient.getInstances("grpc-server");
+    	for (ServiceInstance serviceInstance : server) {
+    		
+			String hostName=serviceInstance.getHost();
+			int gRpcPort=Integer.parseInt(serviceInstance.getMetadata().get("grpc.port"));
+			ManagedChannel channel=ManagedChannelBuilder.forAddress(hostName,gRpcPort).usePlaintext(true).build();
+	        UserServiceBlockingStub stub=UserServiceGrpc.newBlockingStub(channel);
+	        
+	        UserDetail user=UserDetail.newBuilder()
+	        			.setName("Thamira")
+	        			.setEmail("Thamira1005@gmail.com")
+	        			.setAge(24).setGender(Gender.Male)
+	        			.setPassword("password").build();
+	        
+	        u=stub.createUser(user);
+		}
+    	
+        return ResponseEntity.ok("User "+u);
     }
 	
 	

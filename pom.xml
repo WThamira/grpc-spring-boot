@@ -12,6 +12,7 @@
     <modules>
 		<module>grpc-spring-boot-client</module>
 		<module>grpc-spring-boot-server</module>
+    <module>eureka-server</module>
     </modules>
 
 </project>
