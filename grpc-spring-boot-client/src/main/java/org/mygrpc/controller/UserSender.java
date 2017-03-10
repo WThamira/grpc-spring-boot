@@ -33,6 +33,7 @@ public class UserSender {
     		
 			String hostName=serviceInstance.getHost();
 			int gRpcPort=Integer.parseInt(serviceInstance.getMetadata().get("grpc.port"));
+			
 			ManagedChannel channel=ManagedChannelBuilder.forAddress(hostName,gRpcPort).usePlaintext(true).build();
 	        UserServiceBlockingStub stub=UserServiceGrpc.newBlockingStub(channel);
 	        
